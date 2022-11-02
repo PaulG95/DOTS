@@ -13,8 +13,10 @@ using Random=UnityEngine.Random;
 public partial class SpawnSpherePrefab : SystemBase
 {
     private Entity _spherePrefab;
-    private float _timer = 0.01f;
+    private float _timer = 0.02f;
     private float _timePassed = 0f;
+
+    private float entityCounter;
 
 
     protected override void OnStartRunning()
@@ -29,17 +31,22 @@ public partial class SpawnSpherePrefab : SystemBase
         {
             var newSphere = EntityManager.Instantiate(_spherePrefab);
             _timePassed = 0f;
-            
+            entityCounter += 1;
+            Debug.Log(entityCounter);
+
             //Every Entitie gets a random angular & linear velocity value
              Entities
                  .ForEach((ref PhysicsVelocity velocity, in Translation position, in Rotation rotation) =>
                  {
+                     
                      float3 diff = position.Value;
                      float distSqrd = math.lengthsq(diff);
                      float randomLinear = Random.value;
                      float randomAngular = Random.value;
                      velocity.Linear += randomLinear * (diff / math.sqrt(distSqrd));
                      velocity.Angular += randomAngular * (diff / math.sqrt(distSqrd));
+
+                     
                  })
                  .Run();
         }
